@@ -23,7 +23,11 @@ Install the following Python packages:
 
 pip3 install opencv-python pillow numpy pydensecrf torch torchvision
 
+```
+
 📁 Project Structure
+
+```
 
 surfboard-bg-removal-main/
 ├── model/
@@ -36,6 +40,9 @@ surfboard-bg-removal-main/
 │   └── surfboard1_clean.png # Clean output
 ├── surfboard_cleaner.py   # ✅ All-in-one script
 └── README.md              # This file
+
+```
+
 🚀 Quick Start
 Download the U²-Net pretrained weights
 
@@ -44,13 +51,16 @@ Download from the official repo and place it in saved_models/u2net.pth:
 
 Run the full pipeline
 
-bash
+```bash
 
 python3 surfboard_cleaner.py \
   --image input_images/surfboard1.jpg \
   --model saved_models/u2net.pth \
   --output output_images/surfboard1_clean.png \
   --use_crf
+
+```
+
 ✅ Omit --use_crf to skip refinement.
 
 🛠️ Options
@@ -84,10 +94,5 @@ DenseCRF by Philipp Krähenbühl and Vladlen Koltun
 MIT License – free to use and modify.
 
 
-
-
-
-
-Tools
 
 
