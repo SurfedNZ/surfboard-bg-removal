@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 import torch
 from torchvision import transforms
-from model.u2net import U2NET  # Adjust if you are using U2NETP or other variant
+from model.u2net import U2NETP  # Adjust if you are using U2NETP or other variant
 
 # Optional CRF post-processing
 try:
@@ -16,7 +16,7 @@ except ImportError:
 
 
 def load_model(model_path):
-    model = U2NET(3, 1)
+    model = U2NETP(3, 1)
     model.load_state_dict(torch.load(model_path, map_location='cpu'))
     model.eval()
     return model
