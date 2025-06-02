@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 import torch
 from torchvision import transforms
-from model import U2NET  # Adjust if you are using U2NETP or other variant
+from model.u2net import U2NET  # Adjust if you are using U2NETP or other variant
 
 # Optional CRF post-processing
 try:
