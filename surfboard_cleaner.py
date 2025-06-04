@@ -65,27 +65,52 @@ def create_alpha_image(image, mask, use_crf=False):
     rgba = np.dstack((image_np, alpha))
     return Image.fromarray(rgba)
 
+def process_image(image_path, output_path, model, use_crf):
+    image, mask = remove_background(image_path, model)
+    result = create_alpha_image(image, mask, use_crf)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    result.save(output_path)
+    print(f"✅ Processed {os.path.basename(image_path)} → {output_path}")
+
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--image', required=True, help='Path to input image')
+    parser.add_argument('--image', help='Path to input image (single image mode)')
+    parser.add_argument('--output', help='Path to save cleaned image (single image mode)')
+    parser.add_argument('--input_dir', help='Directory with input images for batch processing')
+    parser.add_argument('--output_dir', help='Directory to save cleaned images (batch mode)')
     parser.add_argument('--model', default='saved_models/u2net.pth', help='Path to U2Net model')
-    parser.add_argument('--output', required=True, help='Path to save final cleaned image')
     parser.add_argument('--use_crf', action='store_true', help='Apply CRF refinement')
+    
     args = parser.parse_args()
+
+    if not args.image and not args.input_dir:
+        parser.error("You must provide either --image for single image or --input_dir for batch processing.")
+
+    if args.image and not args.output:
+        parser.error("--output is required when using --image.")
+
+    if args.input_dir and not args.output_dir:
+        parser.error("--output_dir is required when using --input_dir.")
 
     print("Loading model...")
     model = load_model(args.model)
 
-    print("Removing background...")
-    image, mask = remove_background(args.image, model)
+    if args.image:
+        print("Processing single image...")
+        process_image(args.image, args.output, model, args.use_crf)
 
-    print("Refining and saving result...")
-    result = create_alpha_image(image, mask, args.use_crf)
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
-    result.save(args.output)
+    if args.input_dir:
+        print(f"Processing batch images from {args.input_dir}...")
+        supported_exts = ('.jpg', '.jpeg', '.png')
+        image_files = [f for f in os.listdir(args.input_dir) if f.lower().endswith(supported_exts)]
+        os.makedirs(args.output_dir, exist_ok=True)
 
-    print(f"✅ Cleaned image saved at: {args.output}")
+        for fname in image_files:
+            input_path = os.path.join(args.input_dir, fname)
+            output_path = os.path.join(args.output_dir, os.path.splitext(fname)[0] + '_clean.png')
+            process_image(input_path, output_path, model, args.use_crf)
+
 
 
 if __name__ == '__main__':
