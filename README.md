@@ -54,16 +54,23 @@ Run the full pipeline
 ```bash
 
 # Single image mode
-python3 surfboard_cleaner.py \
+python surfboard_cleaner.py \
   --image input_images/surfboard1.jpg \
-  --model saved_models/u2net.pth \
-  --output output_images/surfboard1_clean.png
+  --output output_images/surfboard1_clean.png \
+  --model model/u2netp.pth
 
 # Batch mode (processes all images in input_dir)
-python3 surfboard_cleaner.py \
-  --input_dir input_images/ \
-  --output_dir output_images/ \
-  --model saved_models/u2net.pth
+python surfboard_cleaner.py \
+  --input_dir input_images \
+  --output_dir output_images \
+  --model model/u2netp.pth
+
+# Batch mode (With CRF Refinement), ADD --use_CRF to the base of Single image mode for Single image option with CRF also
+python surfboard_cleaner.py \
+  --input_dir input_images \
+  --output_dir output_images \
+  --model model/u2netp.pth
+  --use_crf
 
 
 ```
